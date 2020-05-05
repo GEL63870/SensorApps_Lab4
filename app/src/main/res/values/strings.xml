@@ -1,0 +1,22 @@
+<resources>
+
+    // Main Activity Strings
+    <string name="app_name">MySensorApp_Lab4_257160</string>
+    <string name="sensors_list">Sensors List</string>
+    <string name="sensor_game">Sensor Game</string>
+    <string name="gps_app_sensor">GPS App Sensor</string>
+    <string name="welcome_to_the_best_sensor_app">Welcome to the best Sensor App!</string>
+
+    <string name="menu">Menu</string>
+
+    // Sensor List Activity strings
+    <string name="welcome_to_the_sensors_list"> All your mobile sensors available \n are below ! Enjoy !</string>
+
+    // Sensor Game Activity strings
+    <string name="welcome_to_this_sensor_ball_game">Welcome to this Sensor Ball Game !</string>
+
+    // Sensor GPS Activity strings
+    <string name="welcome_to_this_gps_sensor_app">Welcome to this GPS Sensor App</string>
+    <string name="content_of_the_sensor">Content of the sensor</string>
+
+</resources>
