@@ -32,4 +32,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.362" />
 
+    <Button
+        android:id="@+id/start_game"
+        android:layout_width="205dp"
+        android:layout_height="82dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/start_to_play"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_game" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

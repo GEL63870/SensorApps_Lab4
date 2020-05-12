@@ -18,5 +18,9 @@
     // Sensor GPS Activity strings
     <string name="welcome_to_this_gps_sensor_app">Welcome to this GPS Sensor App</string>
     <string name="content_of_the_sensor">Content of the sensor</string>
+    <string name="init_location">Initialise your location</string>
+    <string name="your_coordinates">Your coordinates :</string>
+    <string name="permission_issue">Issue with permission</string>
+    <string name="start_to_play">Start to play</string>
 
 </resources>
