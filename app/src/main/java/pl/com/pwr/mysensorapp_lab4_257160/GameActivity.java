@@ -1,68 +1,64 @@
 package pl.com.pwr.mysensorapp_lab4_257160;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Gallery;
+import android.util.Log;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import androidx.appcompat.app.AppCompatActivity;
 
 
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends AppCompatActivity implements SensorEventListener {
 
-    private  int diameter;
-    private int x;
-    private int y;
-    private ShapeDrawable bubble;
+    private static final String TAG = "MainActivity";
+    private ImageView image;
 
-    private LinearLayout layout;
-    private ImageView i;
+    private SensorManager manager;
+    private Sensor accelerometer;
+    private int x, y;
 
-
-
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createBubble();
 
-        i.setImageResource(R.drawable.my_ball);
-        i.setAdjustViewBounds(true);
-        i.setLayoutParams(new Gallery.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        layout.addView(i);
-        layout.setGravity(Gravity.CENTER);
-        setContentView(layout);
-    }
+        setContentView(R.layout.game_activity);
+        image = findViewById(R.id.ballView);
 
-    //public GameActivity(Context context) {
-   //     super(context);
-    //    createBubble();
-   // }
+        manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-    private void createBubble() {
-        x=100;
-        y=100;
-        diameter = 100;
-        bubble = new ShapeDrawable((new OvalShape()));
-        bubble.setBounds(x, y, x + diameter, y + diameter);
-        bubble.getPaint().setARGB(1,183, 26, 81);
-    }
-
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
+        manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        Log.d(TAG, "onCreate: Registered accelerometer listener");
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Nothing to do here (at least for the moment)
+    public void onSensorChanged(SensorEvent event){
+        Log.d(TAG, "onSensorChange : X" + event.values[0] + "Y: " + event.values[1] + "Z: " + event.values[2]);
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            x -= (int) event.values[0];
+            y += (int) event.values[1];
+            image.setY(y);
+            image.setX(x);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor,int accuracy){
+        // Nothing to do here for the moment
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        manager.unregisterListener(this);
     }
 }

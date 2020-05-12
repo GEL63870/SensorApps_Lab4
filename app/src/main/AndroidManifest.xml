@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".MainSensorList" />
         <activity android:name=".MainSensorGame" />
+        <activity android:name=".GameActivity" />
         <activity android:name=".MainGPSApp" />
         <activity android:name=".SensorListAdapter" />
     </application>

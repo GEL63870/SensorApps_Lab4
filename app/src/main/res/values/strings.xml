@@ -22,5 +22,7 @@
     <string name="your_coordinates">Your coordinates :</string>
     <string name="permission_issue">Issue with permission</string>
     <string name="start_to_play">Start to play</string>
+    <string name="viewball">ViewBall</string>
+    <string name="view_ball">View Ball</string>
 
 </resources>
