@@ -12,18 +12,21 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.constraintlayout.solver.widgets.WidgetContainer;
+
 
 public class MainGPSApp extends AppCompatActivity {
 
-    private TextView textView, coordinatesView;
-    private Button menu_btn, init_gps;
+    private TextView textView, coordinatesView, lengthView;
+    private Button menu_btn, init_gps, launch_btn;
+    private SeekBar selected_length;
+    private int min, max, step;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -40,6 +43,36 @@ public class MainGPSApp extends AppCompatActivity {
         textView = findViewById(R.id.welcome_gps);
         coordinatesView = findViewById(R.id.coordinates);
         init_gps = findViewById(R.id.start_location);
+        lengthView = findViewById(R.id.length_view);
+
+        selected_length = findViewById(R.id.select_length);
+        step = 1;
+        min = 1;
+        max = 100;
+        selected_length.setMax((max-min/step));
+        selected_length.setProgress(step);
+
+        selected_length.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                double value = min + (progress * step);
+                lengthView.setText("Selected length : " + progress + "km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+
+        launch_btn = findViewById(R.id.launch_app);
+
+
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -108,6 +141,17 @@ public class MainGPSApp extends AppCompatActivity {
             }
         }
     }
+
+    private void back_to_menu() {
+        menu_btn = findViewById(R.id.menu_button);
+
+        menu_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainGPSApp.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
     private void back_to_menu() {
         menu_btn = findViewById(R.id.menu_button);
