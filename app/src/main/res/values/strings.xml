@@ -24,5 +24,7 @@
     <string name="start_to_play">Start to play</string>
     <string name="viewball">ViewBall</string>
     <string name="view_ball">View Ball</string>
+    <string name="please_lock_your_phone_rotation_before_starting_the_game">(Please lock your phone rotation before starting the game)</string>
+    <string name="this_game_use_accelerometer_sensor_n_if_the_ball_touch_an_edge_n_you_loose">This game use accelerometer sensor. \n If the ball touch an edge : \n You loose !</string>
 
 </resources>

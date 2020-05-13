@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainSensorGame extends AppCompatActivity {
 
-    private TextView textView;
+    private TextView textView, lockView, rulesView;
     private Button menu_btn, start_btn;
 
     @Override
@@ -19,6 +19,8 @@ public class MainSensorGame extends AppCompatActivity {
         setContentView(R.layout.main_sensor_game);
 
         textView = findViewById(R.id.welcome_game);
+        lockView = findViewById(R.id.lock_rotation);
+        rulesView = findViewById(R.id.description);
 
         back_to_menu();
         start_to_play();
