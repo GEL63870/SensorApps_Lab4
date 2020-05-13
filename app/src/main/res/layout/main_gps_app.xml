@@ -34,10 +34,24 @@
         app:layout_constraintTop_toBottomOf="@+id/start_location" />
 
     <TextView
+        android:id="@+id/description_GPS"
+        android:layout_width="356dp"
+        android:layout_height="90dp"
+        android:gravity="center"
+        android:maxLines="4"
+        android:text="@string/thanks_to_your_initial_coordinates_this_app_will_help_you_to_calculate_in_real_time_the_max_distance_you_can_make_and_inform_you_when_you_leave_the_authorized_area"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/start_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_gps"
+        app:layout_constraintVertical_bias="0.241" />
+
+    <TextView
         android:id="@+id/length_view"
         android:layout_width="281dp"
         android:layout_height="32dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="36dp"
         android:text="@string/select_the_maximal_length"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +74,7 @@
         android:id="@+id/start_location"
         android:layout_width="161dp"
         android:layout_height="58dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="128dp"
         android:text="@string/init_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +84,7 @@
         android:id="@+id/select_length"
         android:layout_width="251dp"
         android:layout_height="32dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/length_view" />
@@ -84,7 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_length"
-        app:layout_constraintVertical_bias="0.356" />
+        app:layout_constraintVertical_bias="0.145" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

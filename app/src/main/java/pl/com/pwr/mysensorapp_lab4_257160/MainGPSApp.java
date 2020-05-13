@@ -1,7 +1,6 @@
 package pl.com.pwr.mysensorapp_lab4_257160;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,12 +17,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.WidgetContainer;
-
 
 public class MainGPSApp extends AppCompatActivity {
 
-    private TextView textView, coordinatesView, lengthView;
+    private TextView textView, coordinatesView, lengthView, description;
     private Button menu_btn, init_gps, launch_btn;
     private SeekBar selected_length;
     private int min, max, step;
@@ -38,25 +35,31 @@ public class MainGPSApp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_gps_app);
 
+        // Method that can be launch from onCreateMethod
         back_to_menu();
+        launch_Calculator();
+        configureButton();
 
+        // Initialisation of all XML objects designed
         textView = findViewById(R.id.welcome_gps);
+        description = findViewById(R.id.description_GPS);
         coordinatesView = findViewById(R.id.coordinates);
         init_gps = findViewById(R.id.start_location);
         lengthView = findViewById(R.id.length_view);
 
+        // Initialisation of the SeekBar (for selecting maximal distance available for the user)
         selected_length = findViewById(R.id.select_length);
         step = 1;
         min = 1;
         max = 100;
         selected_length.setMax((max-min/step));
         selected_length.setProgress(step);
-
         selected_length.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 double value = min + (progress * step);
                 lengthView.setText("Selected length : " + progress + "km");
+
             }
 
             @Override
@@ -66,35 +69,31 @@ public class MainGPSApp extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
-
-        launch_btn = findViewById(R.id.launch_app);
-
-
-
+        // Initialisation of the location Manager (to find Initial Coordinates) :
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
 
-            // Call whenever the location is updated
+            // Call whenever the location is updated : changed only once TextView
             @Override
             public void onLocationChanged(Location location) {
-                coordinatesView.append("\n" + location.getLatitude() + " " + location.getLongitude());
-
+                coordinatesView.setText("Your initial coordinates are : " + "\n" + location.getLatitude() + " " + location.getLongitude());
             }
-
+            // Never used
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
             }
-
+            // Never used
             @Override
             public void onProviderEnabled(String provider) {
 
             }
 
-            // Check if the GPS is turn off or not
+            // Check if the GPS is turn off or not : if it is, it ask to turn it on
             @Override
             public void onProviderDisabled(String provider) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -102,9 +101,10 @@ public class MainGPSApp extends AppCompatActivity {
             }
         };
 
-        configureButton();
+
     }
 
+    // Ask for Permission Request in the manifest and if it was clicked in the app by the user
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -118,6 +118,8 @@ public class MainGPSApp extends AppCompatActivity {
         }
     }
 
+    // This configure Button method 1st ask if the location permission are available on the phone
+    // Then we activate the OnClickListener to give location update to the user if accees are OK
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void configureButton() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -142,20 +144,21 @@ public class MainGPSApp extends AppCompatActivity {
         }
     }
 
-    private void back_to_menu() {
-        menu_btn = findViewById(R.id.menu_button);
-
-        menu_btn.setOnClickListener(new View.OnClickListener() {
+    // Once every actions is initialized, you can moove to the second part of the activity
+    private void launch_Calculator() {
+        launch_btn = findViewById(R.id.launch_app);
+        launch_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainGPSApp.this, MainActivity.class);
+                Intent intent = new Intent(MainGPSApp.this, GPS_Calculator.class);
                 startActivity(intent);
             }
         });
+    }
 
+    // If you want to go out from this app and go back to the Main Menu
     private void back_to_menu() {
         menu_btn = findViewById(R.id.menu_button);
-
         menu_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
