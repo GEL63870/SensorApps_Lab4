@@ -8,17 +8,26 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-public class MainGPSApp extends AppCompatActivity {
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+
+public class MainGPSApp extends AppCompatActivity  {
 
     private TextView textView, coordinatesView, lengthView, description;
     private Button menu_btn, init_gps, launch_btn;
@@ -27,6 +36,7 @@ public class MainGPSApp extends AppCompatActivity {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -38,7 +48,6 @@ public class MainGPSApp extends AppCompatActivity {
         // Method that can be launch from onCreateMethod
         back_to_menu();
         launch_Calculator();
-        configureButton();
 
         // Initialisation of all XML objects designed
         textView = findViewById(R.id.welcome_gps);
@@ -52,8 +61,9 @@ public class MainGPSApp extends AppCompatActivity {
         step = 1;
         min = 1;
         max = 100;
-        selected_length.setMax((max-min/step));
+        selected_length.setMax((max - min / step));
         selected_length.setProgress(step);
+            // If you want to take the number of km selected, just use progress as a int
         selected_length.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -73,78 +83,62 @@ public class MainGPSApp extends AppCompatActivity {
             }
         });
 
-        // Initialisation of the location Manager (to find Initial Coordinates) :
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
+        // Initialisation of the initial location button
 
-            // Call whenever the location is updated : changed only once TextView
+        init_gps.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                coordinatesView.setText("Your initial coordinates are : " + "\n" + location.getLatitude() + " " + location.getLongitude());
-            }
-            // Never used
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainGPSApp.this, new String [] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
 
-            }
-            // Never used
-            @Override
-            public void onProviderEnabled(String provider) {
-
+                } else {
+                    getCurrentLocation();
+                }
             }
 
-            // Check if the GPS is turn off or not : if it is, it ask to turn it on
-            @Override
-            public void onProviderDisabled(String provider) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        };
-
-
+        });
     }
 
-    // Ask for Permission Request in the manifest and if it was clicked in the app by the user
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    configureButton();
-                break;
-            default:
-                break;
-        }
-    }
-
-    // This configure Button method 1st ask if the location permission are available on the phone
-    // Then we activate the OnClickListener to give location update to the user if accees are OK
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void configureButton() {
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
-
-                init_gps.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void onClick(View v) {
-                        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
-                            }
-                        }
-                        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
-                    }
-                });
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Permission_denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // Once every actions is initialized, you can moove to the second part of the activity
+    private void getCurrentLocation() {
+
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.getFusedLocationProviderClient(MainGPSApp.this).requestLocationUpdates(locationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                LocationServices.getFusedLocationProviderClient(MainGPSApp.this).removeLocationUpdates(this);
+                if (locationResult != null && locationResult.getLocations().size() > 0) {
+                    int latestLocationIndex = locationResult.getLocations().size() -1;
+                    double latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                    double longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                    coordinatesView.setText(String.format("Lat.: %s | Long.: %s", latitude, longitude));
+                }
+            }
+    }, Looper.getMainLooper());
+}
+
+
+
+
+
+    // Once every actions is initialized, you can move to the second part of the activity
     private void launch_Calculator() {
         launch_btn = findViewById(R.id.launch_app);
         launch_btn.setOnClickListener(new View.OnClickListener() {
@@ -167,4 +161,6 @@ public class MainGPSApp extends AppCompatActivity {
             }
         });
     }
+
+
 }

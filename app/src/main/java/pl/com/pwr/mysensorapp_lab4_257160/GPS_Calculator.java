@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-class GPS_Calculator extends AppCompatActivity {
+public class GPS_Calculator extends AppCompatActivity {
 
     private Button menu_btn;
     private TextView textView, advanceView;
@@ -26,7 +26,7 @@ class GPS_Calculator extends AppCompatActivity {
         textView = findViewById(R.id.welcome_calculator);
         advanceView = findViewById(R.id.advancement);
 
-        //mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar = findViewById(R.id.progressBar);
 
     }
 
