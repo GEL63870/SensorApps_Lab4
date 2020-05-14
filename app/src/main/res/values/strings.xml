@@ -28,8 +28,10 @@
     <string name="this_game_use_accelerometer_sensor_n_if_the_ball_touch_an_edge_n_you_loose">This game use accelerometer sensor. \n If the ball touch an edge : \n You loose !</string>
     <string name="launch_process">Launch_Process</string>
     <string name="select_the_maximal_length">Select the maximal length :</string>
-    <string name="thanks_to_your_initial_coordinates_this_app_will_help_you_to_calculate_in_real_time_the_max_distance_you_can_make_and_inform_you_when_you_leave_the_authorized_area">Thanks to your initial coordinates, this app will help you to calculate in real time the max. distance you can make and inform you when you leave the authorized area.</string>
+    <string name="thanks_to_your_initial_coordinates_this_app_will_help_you_to_calculate_in_real_time_the_max_distance_you_can_make_and_inform_you_when_you_leave_the_authorized_area">Thanks to your initial coordinates, this app will help you to calculate in real time the max. distance you can make and inform you when you leave the authorized area. Please Activate Localisation (GPS) before initialise.</string>
     <string name="percentage_of_advancement">Percentage of advancement :</string>
     <string name="we_are_calculating_your_movement">We are calculating your movement</string>
+    <string name="calculate_current_position">Calculate current position</string>
+    <string name="new_coordinates">New coordinates</string>
 
 </resources>

@@ -32,7 +32,9 @@ public class MainGPSApp extends AppCompatActivity  {
     private TextView textView, coordinatesView, lengthView, description;
     private Button menu_btn, init_gps, launch_btn;
     private SeekBar selected_length;
-    private int min, max, step;
+    private int min, max, step, distance_max_selected;
+
+    public double initial_lat, initial_long;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -48,6 +50,7 @@ public class MainGPSApp extends AppCompatActivity  {
         // Method that can be launch from onCreateMethod
         back_to_menu();
         launch_Calculator();
+        SeekBar_Selection();
 
         // Initialisation of all XML objects designed
         textView = findViewById(R.id.welcome_gps);
@@ -56,32 +59,8 @@ public class MainGPSApp extends AppCompatActivity  {
         init_gps = findViewById(R.id.start_location);
         lengthView = findViewById(R.id.length_view);
 
-        // Initialisation of the SeekBar (for selecting maximal distance available for the user)
-        selected_length = findViewById(R.id.select_length);
-        step = 1;
-        min = 1;
-        max = 100;
-        selected_length.setMax((max - min / step));
-        selected_length.setProgress(step);
-            // If you want to take the number of km selected, just use progress as a int
-        selected_length.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                double value = min + (progress * step);
-                lengthView.setText("Selected length : " + progress + "km");
 
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         // Initialisation of the initial location button
 
@@ -98,6 +77,37 @@ public class MainGPSApp extends AppCompatActivity  {
             }
 
         });
+    }
+
+    // Initialisation of the SeekBar (for selecting maximal distance available for the user)
+    public void SeekBar_Selection() {
+        selected_length = findViewById(R.id.select_length);
+        step = 1;
+        min = 1;
+        max = 100;
+        selected_length.setMax((max - min / step));
+        selected_length.setProgress(step);
+        // If you want to take the number of km selected, just use progress as a int
+        selected_length.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                double value = min + (progress * step);
+                lengthView.setText("Selected length : " + progress + "meters");
+                distance_max_selected = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -126,9 +136,10 @@ public class MainGPSApp extends AppCompatActivity  {
                 LocationServices.getFusedLocationProviderClient(MainGPSApp.this).removeLocationUpdates(this);
                 if (locationResult != null && locationResult.getLocations().size() > 0) {
                     int latestLocationIndex = locationResult.getLocations().size() -1;
-                    double latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                    double longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-                    coordinatesView.setText(String.format("Lat.: %s | Long.: %s", latitude, longitude));
+                    initial_lat = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                    initial_long = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                    coordinatesView.setText(String.format("Lat.: %s | Long.: %s", initial_lat, initial_long));
+
                 }
             }
     }, Looper.getMainLooper());
@@ -145,6 +156,9 @@ public class MainGPSApp extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainGPSApp.this, GPS_Calculator.class);
+                intent.putExtra("First_latitude", initial_lat);
+                intent.putExtra("First_longitude", initial_long);
+                intent.putExtra("Distance_selected", distance_max_selected);
                 startActivity(intent);
             }
         });
